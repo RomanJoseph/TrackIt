@@ -69,6 +69,8 @@ const Main = styled.div`
     background-color: #E5E5E5;
     padding-left:18px;
     padding-right: 18px;
+    font-family: 'Lexend Deca', sans-serif;
+    font-family: 'Roboto', sans-serif;
 `
 
 const Habit = styled.div`

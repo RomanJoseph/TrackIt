@@ -57,4 +57,5 @@ body{
     width: 375px;
     font-weight: 400;
 	margin-top: 70px;
-}`
+}
+`

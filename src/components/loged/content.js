@@ -17,6 +17,7 @@ export default function Content() {
     const [button, setButton] = useState(false)
     const [isSend,setIsSend] = useState(false)
     const [error, setError] = useState(false)
+    const [enabled,setEnabled] = useState(true)
 
     const noHabit = (
         <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
@@ -30,12 +31,14 @@ export default function Content() {
         setCreateHabit(false)
         setIsDisabled(false)
         setIsSend(false)
+        setEnabled(true)
     }
 
     if(error){
         setButton(false)
         setError(false)
         setIsDisabled(false)
+        setEnabled(true)
     }
 
     useEffect(() => {
@@ -51,6 +54,7 @@ export default function Content() {
         const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", { name: habitName, days }, config)
         setButton(true)
         setIsDisabled(true)
+        setEnabled(false)
         promise.then(() => {
             setDays([])
             setUpdate(!update)}
@@ -65,7 +69,7 @@ export default function Content() {
         <form onSubmit={(event) => event.preventDefault()}>
             <NewHabit>
                 <input type="text" placeholder="Nome do hábito" onChange={(event) => setHabitName(event.target.value)} value={habitName} disabled={isDisabled ? true : false}></input>
-                <Days>
+                {enabled ? (                    <Days>
                     {week.map((item, index) => {
                         if (days.includes(index)) {
                             return (
@@ -82,7 +86,21 @@ export default function Content() {
                         }
 
                     })}
-                </Days>
+                </Days>):(                    <Days>
+                    {week.map((item, index) => {
+                        if (days.includes(index)) {
+                            return (
+                                <DaySelected key={index}>{item}</DaySelected>
+                            )
+                        } else {
+                            return (
+                                <Day key={index}>{item}</Day>
+                            )
+                        }
+
+                    })}
+                </Days>)}
+                
                 <End>
                     <div onClick={() => setCreateHabit(false)}>Cancelar</div>
                     <button disable={isDisabled} type="submit" onClick={(event) => {
@@ -217,6 +235,10 @@ const NewHabit = styled.div`
         border-radius: 5px;
         margin-top: 18px;
         margin-bottom: 8px;
+    }
+
+    input:disabled{
+        color:#F2F2F2;
     }
 
     input::-webkit-input-placeholder{

@@ -15,7 +15,7 @@ function App() {
 
   return (
     <>
-      <GlobalStyle />
+      <GlobalStyle/>
       <BarContext.Provider value={{ bar, setBar }}>
         <UserContext.Provider value={{ user, setUser }}>
           <BrowserRouter>
