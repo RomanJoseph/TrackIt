@@ -9,7 +9,20 @@ import logo from "./logo.png"
 export default function Register(){
     const [form, setForm] = useState()
     const [button, setButton] = useState(false)
+    const [isDisabled, setIsDisabled] = useState(false)
+    const [isRegistered, setIsRegistered] = useState(false)
+    const [error, setError] = useState(false)
     const navigate = useNavigate()
+
+    if(isRegistered){
+        navigate("/")
+    }
+
+    if(error){
+        setButton(false)
+        setError(false)
+        setIsDisabled(false)
+    }
 
     function handleForm(event){
         setForm({
@@ -18,11 +31,14 @@ export default function Register(){
     }
 
     function register(){
-        setButton(true)
         const body = form
         const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up",body)
-        promise.then(() => navigate("/"))
-        promise.catch(() => alert("Algo deu errado"), navigate("/cadastro"))
+        promise.then(() => setIsRegistered(true))
+        promise.catch(() => {
+            alert("Algo deu errado") 
+            setError(true)})
+        setButton(true)
+        setIsDisabled(true)
     }
 
     return(
@@ -32,11 +48,11 @@ export default function Register(){
                 event.preventDefault()
                 register()
             }}>
-                <input type="text" placeholder="email" name="email" onChange={handleForm} required></input>
-                <input type="password" placeholder="senha" name="password" onChange={handleForm} required></input>
-                <input type="text" placeholder="nome" name="name" onChange={handleForm} required></input>
-                <input type="text" placeholder="foto" name="image" onChange={handleForm} required></input>
-                <button type="submit">{button ? <ThreeDots color="#FFFFFF" height={80} width={80} /> : "Cadastrar"}</button>
+                <input type="text" placeholder="email" name="email" onChange={handleForm} disabled={isDisabled} required></input>
+                <input type="password" placeholder="senha" name="password" onChange={handleForm} disabled={isDisabled} required></input>
+                <input type="text" placeholder="nome" name="name" onChange={handleForm} disabled={isDisabled} required></input>
+                <input type="text" placeholder="foto" name="image" onChange={handleForm} disabled={isDisabled} required></input>
+                <button type="submit" disabled={isDisabled}>{button ? <ThreeDots color="#FFFFFF" height={80} width={80} /> : "Cadastrar"}</button>
             </Form>
             <Link to="/"><p>Já tem uma conta ? Faça login!</p></Link>
         </Page>
@@ -66,10 +82,10 @@ const Form = styled.form`
     display:flex;
     flex-direction:column;
 
-    ::placeholder{
-        color: red;
+    input::-webkit-input-placeholder{
+        color: #DBDBDB;
         font-size: 20px;
-        margin-left:10px
+        padding-left: 11px;
     }
 
     input[type=text], input[type=password]{
@@ -79,6 +95,11 @@ const Form = styled.form`
         margin-bottom:5px;
         border: 1px solid #D5D5D5;
         border-radius: 5px;
+    }
+
+    input[type=text]:disabled,input[type=password]:disabled{
+        color: #AFAFAF;
+        background-color: #F2F2F2;
     }
 
     button[type=submit]{
@@ -92,5 +113,11 @@ const Form = styled.form`
         display: flex;
         justify-content: center;
         align-items: center;
+        opacity:${(props) => props.disabled ? 0.7:1.0};
+        border-radius: 5px;
+    }
+
+    button[type=submit]:disabled{
+        opacity: 0.7;
     }
 `
